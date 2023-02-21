@@ -1,5 +1,4 @@
 const express = require("express")
-
 const morgan = require("morgan")
 const expressValidator = require("express-validator")
 const dotenv = require("dotenv")
@@ -17,6 +16,8 @@ const {
 } = require("./controller")
 const { expenseValidator, incomeValidator } = require("./validator/index")
 const bodyParser = require("body-parser")
+
+//MONGODB CONNECTIONS
 const mongoose = require("mongoose")
 
 mongoose.connect(process.env.MONGO_URI).then(console.log("DB Connected"))
@@ -24,9 +25,11 @@ mongoose.connect(process.env.MONGO_URI).then(console.log("DB Connected"))
 mongoose.connection.on("error", (err) =>
   console.log(`DB connection error ${err}`)
 )
+
 app.use(bodyParser.json())
 app.use(morgan("dev"))
 app.use(expressValidator())
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*")
   res.setHeader(
