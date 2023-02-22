@@ -16,15 +16,10 @@ const {
 } = require("./controller")
 const { expenseValidator, incomeValidator } = require("./validator/index")
 const bodyParser = require("body-parser")
+const ConnectDB = require("./config/db")
 
 //MONGODB CONNECTIONS
-const mongoose = require("mongoose")
-
-mongoose.connect(process.env.MONGO_URI).then(console.log("DB Connected"))
-
-mongoose.connection.on("error", (err) =>
-  console.log(`DB connection error ${err}`)
-)
+ConnectDB()
 
 app.use(bodyParser.json())
 app.use(morgan("dev"))
@@ -51,3 +46,8 @@ app.put("/:id", expenseValidator, updateExpense)
 //Server Port
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`))
+//MONGO Error Handler
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Error: ${err.message}`)
+  server.close(() => process.exit(1))
+})
